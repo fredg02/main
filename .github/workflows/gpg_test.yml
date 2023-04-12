@@ -61,11 +61,12 @@ jobs:
           EOL
       - name: Show pom.xml
         run: cat my-app/pom.xml
-      - name: Configure GPG Key
-        run: |
-          echo -n "$GPG_SIGNING_KEY" | gpg --import
-        env:
-          GPG_SIGNING_KEY: ${{ secrets.KEYRING }}
+      - name: Import GPG key
+        id: import_gpg
+        uses: crazy-max/ghaction-import-gpg@v5
+        with:
+          gpg_private_key: ${{ secrets.KEYRING }}
+          passphrase: ${{ secrets.GPG_PASSPHRASE }}
       - name: Run Maven build
         run: mvn -B -f my-app/pom.xml clean verify
       - name: GPG verify
