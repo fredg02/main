@@ -67,6 +67,7 @@ jobs:
         with:
           gpg_private_key: ${{ secrets.KEYRING }}
           passphrase: ${{ secrets.GPG_PASSPHRASE }}
+          fingerprint: BEE36C195D7BB78AC292D27A52F054DC02A8BE6B
       - name: Run Maven build
         run: mvn -B -f my-app/pom.xml clean verify
       - name: GPG verify
