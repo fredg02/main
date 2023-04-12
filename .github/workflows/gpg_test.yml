@@ -61,13 +61,11 @@ jobs:
           EOL
       - name: Show pom.xml
         run: cat my-app/pom.xml
-      - name: Setup GPG
-        env:
-          KEYRING: ${{ secrets.KEYRING }}
+      - name: Configure GPG Key
         run: |
-           cat "${KEYRING}" > secret-subkeys.asc
-           gpg --batch --import "secret-subkeys.asc"
-           for fpr in $(gpg --list-keys --with-colons  | awk -F: \'/fpr:/ {print $10}\' | sort -u); do echo -e "5\ny\n" |  gpg --batch --command-fd 0 --expert --edit-key ${fpr} trust; done
+          echo -n "$GPG_SIGNING_KEY" | gpg --import
+        env:
+          GPG_SIGNING_KEY: ${{ secrets.KEYRING }}
       - name: Run Maven build
         run: mvn -B -f my-app/pom.xml clean verify
       - name: GPG verify
